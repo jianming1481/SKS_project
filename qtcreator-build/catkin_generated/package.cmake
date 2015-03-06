@@ -1,0 +1,7 @@
+set(_CATKIN_CURRENT_PACKAGE "testQT")
+set(testQT_MAINTAINER "iclab <iclab@gmail.com>")
+set(testQT_DEPRECATED "")
+set(testQT_VERSION "0.1.0")
+set(testQT_BUILD_DEPENDS "qt_build" "roscpp" "libqt4-dev")
+set(testQT_RUN_DEPENDS "qt_build" "roscpp" "libqt4-dev")
+set(testQT_BUILDTOOL_DEPENDS "catkin")

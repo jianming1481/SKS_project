@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: testQT
+Description: Description of testQT
+Version: 0.1.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 

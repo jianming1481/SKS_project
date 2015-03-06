@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/iclab/catkin_ws/src/qtcreator-build/devel/setup.sh

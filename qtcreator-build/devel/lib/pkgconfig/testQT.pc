@@ -1,0 +1,8 @@
+prefix=/home/iclab/catkin_ws/src/qtcreator-build/devel
+
+Name: testQT
+Description: Description of testQT
+Version: 0.1.0
+Cflags: 
+Libs: -L/home/iclab/catkin_ws/src/qtcreator-build/devel/lib 
+Requires: 

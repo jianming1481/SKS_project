@@ -1,0 +1,5 @@
+string str_cli
+int32 num_cli
+---
+string str_srv
+int32 num_srv
