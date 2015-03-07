@@ -53,6 +53,8 @@ private:
     double shift_x;
     double shift_y;
     double rotation;
+    double tmp_yaw;
+
     Vector2i tPos;
     Vector3d Robot;
     Vector3d predictionPos;

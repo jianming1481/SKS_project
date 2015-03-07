@@ -46,10 +46,16 @@ public:
     virtual ~paintImageClass(){};
 
     void readMap();
-    void refresh_window(Vector3d robot, std::vector<Vector3d> pAry,std::vector<Vector2i> sensorWall_Pos,std::vector<Vector2i> tp_wall);
     void paint_particle(std::vector<Vector3d> pAry);
     void paint_sensorline(Vector3d robot_pos,std::vector<Vector2i> sensorWall_Pos);
     void paint_robot(Vector3d robot);
     void paint_particle_sensorwall(std::vector<Vector3d> pAry,std::vector<Vector2i> tpos_wall);
+
+    void refresh_window();
+    void paintRobot_Particle(Vector3d robot, std::vector<Vector3d> pAry);
+    void paintRobot_Sensorlines_Particle(Vector3d robot, std::vector<Vector3d> pAry,std::vector<Vector2i> sensorWall_Pos);
+
+    //to verify particle sensor
+    void paintRobot_Particle_PSensor(Vector3d robot, std::vector<Vector3d> pAry,std::vector<Vector2i> sensorWall_Pos,std::vector<Vector2i> tp_wall);
 };
 #endif

@@ -16,8 +16,6 @@
 #include "../include/qClient.hpp"
 #include <std_msgs/String.h>
 
-
-
 /*****************************************************************************
 ** ROS
 *****************************************************************************/
@@ -32,6 +30,9 @@ void Client::ros_comms_init() {
     n = new ros::NodeHandle();
     laser_sub = n->subscribe("/scan",1,&Client::laserCallback,this);
     move_sub = n->subscribe("/sks_speed_topic",1,&Client::moveCallback,this);
+    shift_x=0;
+    shift_y=0;
+    rotation =0;
     //ros::spin();
 }
 

@@ -9,6 +9,7 @@
 
 #include "iostream"
 #include "particle_filter.hpp"
+#define trust_imu false
 
 Particle tmp_p;
 bool reflash;
@@ -142,9 +143,11 @@ void ParticleFilter::initParticle_Filter(/*int P_Num,int L_Num*/)
     {
         tmp_p.pos(0) = randomX();
         tmp_p.pos(1) = randomY();
-        double tmp_yaw = 0;
 
-//        double tmp_yaw = rand()%360;
+        if(trust_imu)
+            tmp_yaw = 0;
+        else
+            tmp_yaw = rand()%360;
         //ROS_INFO("%d:done",i);
 
         tmp_p.yaw = tmp_yaw*(2*M_PI)/360;
@@ -202,7 +205,10 @@ void ParticleFilter::moveParticle(geometry_msgs::Twist tmp)
         {
             pAry[i].pos(0) = randomX();
             pAry[i].pos(1) = randomY();
-            double tmp_yaw = rand()%360;
+            if(trust_imu)
+                tmp_yaw = 0;
+            else
+                tmp_yaw = rand()%360;
             pAry[i].yaw = tmp_yaw*(2*M_PI)/360;
         }
     }
@@ -281,12 +287,13 @@ void ParticleFilter::rateGrade()
             if(tPos(0) >= 0 && tPos(0) < mapW && tPos(1) >= 0 && tPos(1) < mapH)
             {
 //                double aaaa=likeliHoodMap[tPos(1)*mapW_grid + tPos(0)];             //---------------for Debug
-                std::cout << "likelihood_grade:" << likeliHood_map[tPos(1)*mapW + tPos(0)] << std::endl;
+                //std::cout << "likelihood_grade:" << likeliHood_map[tPos(1)*mapW + tPos(0)] << std::endl;
                 sumGrade = tmp_grade * likeliHood_map[tPos(1)*mapW + tPos(0)];
                 tmp_grade = sumGrade;
 //                sumGrade += likeliHoodMap[tPos(1)*mapW_grid + tPos(0)]*rate2;
             }else{
-
+                sumGrade = tmp_grade*0.00001;
+                tmp_grade = sumGrade;
             }
         }
         //pAry[i].sumGrade = sumGrade*rate1;
