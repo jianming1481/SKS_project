@@ -302,6 +302,84 @@ void ParticleFilter::rateGrade()
         //std::cout << "sumGrade:" << sumGrade << std::endl;
     }
 }
+void ParticleFilter::rateGrade(Vector3d robot,int sensorWall_Dist[])
+{
+    double rate2;
+    Vector2i robot_pos(robot(0),robot(1));
+    sensorWall_Pos.clear();
+    for(int i = 0;i<sensorLineNum;i++)
+    {
+        double eachDeg = 180/sensorLineNum;
+        double nowDeg = i*eachDeg;
+        double to_rad = nowDeg*2*3.1415/360-1.57;
+        double nowRad = robot(2) + to_rad;
+        if(nowRad >= 2*3.14159)
+        {
+            nowRad = nowRad - 2*3.14159;
+        }
+        Vector2d addPos;
+        addPos(0) = sensorWall_Dist[i]*cos(nowRad);
+        addPos(1) = sensorWall_Dist[i]*sin(nowRad);
+        Vector2i addPosi = Vector2i(addPos(0),addPos(1));
+
+        tPos = robot_pos + addPosi;
+
+        sensorWall_Pos.push_back(tPos);
+
+    }
+    for(int i= 0;i < pAry.size();i++){
+        double sumGrade = 0;
+        double tmp_grade=1;                                 //----for plus
+        Vector2i grid_pos(pAry[i].pos(0),pAry[i].pos(1));
+        double P_yaw = pAry[i].yaw;
+
+        tpos_wall.clear();
+        for(int j=0;j<sensorLineNum;j++)
+        {
+            double eachDeg = 180/sensorLineNum;
+            double nowDeg = j*eachDeg;
+            double to_rad = nowDeg*2*3.1415/360-1.57;
+            double nowRad = P_yaw + to_rad;
+            if(nowRad >= 2*3.14159)
+            {
+                nowRad = nowRad - 2*3.14159;
+            }
+            Vector2d addPos;
+            addPos(0) = sensorWall_Dist[j]*cos(nowRad);
+            addPos(1) = sensorWall_Dist[j]*sin(nowRad);
+            Vector2i addPosi = Vector2i(addPos(0),addPos(1));
+
+            tPos = grid_pos + addPosi;
+
+            if(i==0)
+            {
+                tpos_wall.push_back(tPos);
+            }
+
+            if(sensorWall_Dist[j]>240)
+            {
+                rate2 = 0.5;
+            }else{
+                rate2 = 1;
+            }
+
+            if(tPos(0) >= 0 && tPos(0) < mapW && tPos(1) >= 0 && tPos(1) < mapH)
+            {
+//                double aaaa=likeliHoodMap[tPos(1)*mapW_grid + tPos(0)];             //---------------for Debug
+                //std::cout << "likelihood_grade:" << likeliHood_map[tPos(1)*mapW + tPos(0)] << std::endl;
+                sumGrade = tmp_grade * likeliHood_map[tPos(1)*mapW + tPos(0)];
+                tmp_grade = sumGrade;
+//                sumGrade += likeliHoodMap[tPos(1)*mapW_grid + tPos(0)]*rate2;
+            }else{
+                sumGrade = tmp_grade*0.00001;
+                tmp_grade = sumGrade;
+            }
+        }
+        //pAry[i].sumGrade = sumGrade*rate1;
+        pAry[i].sumGrade = sumGrade;
+        //std::cout << "sumGrade:" << sumGrade << std::endl;
+    }
+}
 bool ParticleFilter::ISConvergence()
 {
     Vector2d pre_pos;

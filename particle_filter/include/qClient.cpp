@@ -28,6 +28,7 @@ Client::Client(int argc, char** argv,const char* node_name)
 }
 void Client::ros_comms_init() {
     n = new ros::NodeHandle();
+    laser_dist = new int[sensorlineNum];
     laser_sub = n->subscribe("/scan",1,&Client::laserCallback,this);
     move_sub = n->subscribe("/sks_speed_topic",1,&Client::moveCallback,this);
     shift_x=0;
@@ -53,10 +54,15 @@ void Client::moveCallback(const geometry_msgs::Twist::ConstPtr& msg)
 }
 void Client::laserCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-    for(int i=0;i<180;i++)
+
+    for(int i=0;i<sensorlineNum;i++)
     {
-        ROS_INFO("%d:[%0.2f]",i,msg->ranges[(i)*4]*100);
+        //ROS_INFO("%d:[%0.2f]",i,msg->ranges[(i*4)]*100);
+        laser_dist[i] = msg->ranges[i*4]*100;
+        //laser_dist[sensorlineNum-i-1] = msg->ranges[i*4]*100;
+
     }
+
 //    ros::Rate loop_rate(1000);
 //    ros::spinOnce();
 //    loop_rate.sleep();
@@ -73,4 +79,9 @@ geometry_msgs::Twist Client::return_move()
     tmp.angular.z = rotation;
     //ROS_INFO("x:%f\ty:%f",shift_x,shift_y);
     return tmp;
+}
+
+int* Client::return_laser_dist()
+{
+    return laser_dist;
 }

@@ -15,6 +15,7 @@ public:
 private:
     Vector3d init_robot;
     Vector3d robot;
+    int *test_laser_dist;
 
     void pf_init();
     void pf_process();

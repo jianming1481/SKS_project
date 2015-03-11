@@ -17,6 +17,7 @@ PFNode_Class::PFNode_Class(int argc, char **argv, const char *node_name):Client(
 }
 void PFNode_Class::pf_init()
 {
+    test_laser_dist = new int[sensorlineNum];
     this->ros_comms_init();
     pf.initParticle_Filter();
     pf.build_LikelihoodMap();
@@ -76,12 +77,20 @@ void PFNode_Class::run()
         {
             pf.moveParticle(this->return_move());
             ISConvergence = false;
-            image.paintRobot_Particle(robot,pf.get_Particle());
+            //image.paintRobot_Particle(robot,pf.get_Particle());
+            image.paintRobot_Sensorlines_Particle(robot,pf.get_Particle(),pf.get_SensorWall());
+
         }
         if(!ISConvergence)
         {
-            pf.Sim_SensorModel(robot);
-            pf.rateGrade();
+            //pf.Sim_SensorModel(robot);
+            //pf.rateGrade();
+            pf.rateGrade(robot,this->return_laser_dist());
+            test_laser_dist = this->return_laser_dist();
+            for(int z=0;z<sensorlineNum;z++)
+            {
+                std::cout << test_laser_dist[z] << std::endl;
+            }
             //pf.roulette_wheel_selection();
             pf.tournament_selection();
             c++;
@@ -92,7 +101,8 @@ void PFNode_Class::run()
                 c=0;
             }
         }
-        image.paintRobot_Particle(robot,pf.get_Particle());
+        //image.paintRobot_Particle(robot,pf.get_Particle());
+        image.paintRobot_Sensorlines_Particle(robot,pf.get_Particle(),pf.get_SensorWall());
         robot_shift_tmp = robot_shift;
     }
 }

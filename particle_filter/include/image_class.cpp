@@ -126,6 +126,7 @@ void paintImageClass::paintRobot_Sensorlines_Particle(Vector3d robot, std::vecto
     refresh_window();
     paint_sensorline(robot,sensorWall_Pos);
     paint_robot(robot);
+
     imshow(imageName,image);
     waitKey(60);
 }

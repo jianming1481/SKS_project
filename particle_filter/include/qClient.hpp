@@ -30,6 +30,7 @@
 #include <QFuture>
 #include <qtconcurrentrun.h>
 
+#define sensorlineNum 45
 
 /*****************************************************************************
 ** Class
@@ -45,6 +46,7 @@ private:
     double shift_x;
     double shift_y;
     double rotation;
+    int *laser_dist;
 
     /****************************/
     /************ROS*************/
@@ -63,6 +65,7 @@ public:
 
     ros::Subscriber move_sub;
 
+    int *return_laser_dist();
     geometry_msgs::Twist return_move();
 };
 

@@ -83,6 +83,7 @@ public:
     void moveParticle(geometry_msgs::Twist tmp);
     void Sim_SensorModel(Vector3d robot);
     void rateGrade();
+    void rateGrade(Vector3d robot,int sensorWall_Dist[]);
     bool ISConvergence();
     void roulette_wheel_selection();
     void tournament_selection();
