@@ -166,7 +166,8 @@ void ParticleFilter::moveParticle(geometry_msgs::Twist tmp)
     int tmp1_noise[12];
     Vector2d move;
     double rot;
-    double move_dir = atan2(tmp.linear.y,tmp.linear.x);
+    double move_dir;
+    double move_dir_tmp = atan2(tmp.linear.y,tmp.linear.x);
     double move_tmp = sqrt((tmp.linear.x*tmp.linear.x)+(tmp.linear.y*tmp.linear.y));
 
     move(0) = tmp.linear.x;
@@ -192,7 +193,7 @@ void ParticleFilter::moveParticle(geometry_msgs::Twist tmp)
         G_noise(0) = (G_noise(0)/2-300)/300*10; //產生-5~5之間的亂數
         G_noise(1) = (G_noise(1)/2-300)/300*0.52; //產生-0.087~0.087的亂數(-5度~5度)
 
-        //std::cout << i << ":" << "G1:" << G_noise(0) << "\tG2:" << G_noise(1)/6.28*360 << std::endl;
+        move_dir = move_dir_tmp + pAry[i].yaw;
 
         move(0) = (move_tmp+G_noise(0))*cos(move_dir+G_noise(1));
         move(1) = (move_tmp+G_noise(0))*sin(move_dir+G_noise(1));
@@ -395,7 +396,7 @@ void ParticleFilter::tournament_selection()
     //-------競爭取前40%
     for(int i=0;i<pAry.size();i++)
     {
-        sel = rand()%200;
+        sel = rand()%25;
         newAry.push_back(pAry[sel]);
     }
     pAry = newAry;

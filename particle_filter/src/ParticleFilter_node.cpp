@@ -1,10 +1,11 @@
 #include "ParticleFilter_node.hpp"
 
 #define pNum 300
-#define sensorlines 90
+#define sensorlines 45
 #define mapW 600
 #define mapH 600
 #define convergencefirst false
+#define Simulate true
 
 
 ParticleFilter pf(pNum,sensorlines,mapW,mapH);
@@ -59,15 +60,21 @@ void PFNode_Class::run()
                     + (robot_shift_tmp.linear.y-robot_shift.linear.y)*(robot_shift_tmp.linear.x-robot_shift.linear.y));
         Isrotate = fabs(robot_shift_tmp.angular.z-robot_shift.angular.z);
 
-        robot(0) = robot(0) + robot_shift.linear.x;
-        robot(1) = robot(1) + robot_shift.linear.y;
-        robot(2) = robot(2) + robot_shift.angular.z;
+        if(Simulate)
+        {
+            robot(2) = robot(2) + robot_shift.angular.z;
+            robot(0) = robot(0) + robot_shift.linear.x*cos(robot(2)) + robot_shift.linear.y*cos(robot(2)+1.57);
+            robot(1) = robot(1) + robot_shift.linear.x*sin(robot(2)) + robot_shift.linear.y*sin(robot(2)+1.57);
+        }else{
+            robot(0) = robot(0) + robot_shift.linear.x;
+            robot(1) = robot(1) + robot_shift.linear.y;
+            robot(2) = robot(2) + robot_shift.angular.z;
+
+        }
 
         if(Ismove>=5||Isrotate>0.087)
         {
             pf.moveParticle(this->return_move());
-            //pf.Sim_SensorModel(robot);
-            //pf.rateGrade();
             ISConvergence = false;
             image.paintRobot_Particle(robot,pf.get_Particle());
         }
@@ -75,7 +82,8 @@ void PFNode_Class::run()
         {
             pf.Sim_SensorModel(robot);
             pf.rateGrade();
-            pf.roulette_wheel_selection();
+            //pf.roulette_wheel_selection();
+            pf.tournament_selection();
             c++;
             if(c>25 || pf.ISConvergence())
             {
@@ -86,6 +94,5 @@ void PFNode_Class::run()
         }
         image.paintRobot_Particle(robot,pf.get_Particle());
         robot_shift_tmp = robot_shift;
-        //ROS_INFO("loop_finish");
     }
 }

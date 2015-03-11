@@ -44,6 +44,7 @@ const double mAngle2Cos(cos(5*M_PI/6));
 const double mAngle3Cos(cos(3*M_PI/2));
 
 geometry_msgs::Twist movement;
+geometry_msgs::Twist movement_tmp;
 int motor_ID0,motor_ID1,motor_ID2;
 
 
@@ -89,9 +90,13 @@ void Kinematics()
     GetWheelDist(motor_ID1);
     GetWheelDist(motor_ID2);
 
-    movement.linear.x += 0.5774*mWheelDist[0] + (-0.5774)*mWheelDist[1] + 0.0*mWheelDist[2];
-    movement.linear.y += 0.3333*mWheelDist[0] + 0.3333*mWheelDist[1] + (-0.6667)*mWheelDist[2];
-    movement.angular.z += 1.9608*mWheelDist[0] + 1.9608*mWheelDist[1] + 1.9608*mWheelDist[2];
+    movement_tmp.linear.x = 0.5774*mWheelDist[0] + (-0.5774)*mWheelDist[1] + 0.0*mWheelDist[2];
+    movement_tmp.linear.y = 0.3333*mWheelDist[0] + 0.3333*mWheelDist[1] + (-0.6667)*mWheelDist[2];
+    movement_tmp.angular.z += 1.9608*mWheelDist[0] + 1.9608*mWheelDist[1] + 1.9608*mWheelDist[2];
+
+    movement.linear.x += movement_tmp.linear.x*cos(movement_tmp.angular.z)+movement_tmp.linear.y*cos(movement_tmp.angular.z+1.57);
+    movement.linear.y += movement_tmp.linear.x*sin(movement_tmp.angular.z)+movement_tmp.linear.y*sin(movement_tmp.angular.z+1.57);
+    movement.angular.z = -1*movement_tmp.angular.z;
 }
 
 /*==============================================================================*/
@@ -158,11 +163,11 @@ int main(int argc, char **argv)
       m->GetPositionIs(motor_ID1, &MotorPlus[motor_ID1]);
       m->GetPositionIs(motor_ID2, &MotorPlus[motor_ID2]);
 
+      Kinematics();
+
       std::cout << "x:" << movement.linear.x << std::endl;
       std::cout << "y:" << movement.linear.y << std::endl;
       std::cout << "yaw:" << movement.angular.z*180/M_PI << std::endl;
-
-      Kinematics();
 
       ros::spinOnce();
       loop_rate.sleep();

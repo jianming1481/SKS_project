@@ -93,7 +93,12 @@ void paintImageClass::paint_particle_sensorwall(std::vector<Vector3d> pAry,std::
     CvPoint SensorWall_pos;
     CvScalar Color=CV_RGB(255,119,0);
 
-    CvPoint partical_pos = cvPoint(pAry[0](0),pAry[0](1));
+    int x = pAry[0](0);
+    int y = pAry[0](1);
+
+    CvPoint partical_pos = cvPoint(x,y);
+    std::cout << "x:" << x << std::endl;
+    std::cout << "y:" << y << std::endl;
     for(int k=0;k<tpos_wall.size();k++)
     {
         //std::cout << "x:" << sensorWall_Pos[i](0) << "\t" << "y:" << sensorWall_Pos[i](1) << std::endl;
@@ -128,11 +133,19 @@ void paintImageClass::paintRobot_Sensorlines_Particle(Vector3d robot, std::vecto
 //to verify particle sensor
 void paintImageClass::paintRobot_Particle_PSensor(Vector3d robot, std::vector<Vector3d> pAry,std::vector<Vector2i> sensorWall_Pos,std::vector<Vector2i> tp_wall)
 {
-    refresh_window();
+    image = cv::Mat(600,600,CV_8UC3,Scalar(255,255,255));
+    image = imread( "/home/iclab/catkin_ws/devel/lib/particle_filter/SKS_ground.jpg", 1 );
     paint_sensorline(robot,sensorWall_Pos);
     paint_robot(robot);
-    paint_particle_sensorwall(pAry,tp_wall);
     paint_particle(pAry);
+
+    int x = pAry[0](0);
+    int y = pAry[0](1);
+
+    std::cout << "out x:" << x << std::endl;
+    std::cout << "out y:" << y << std::endl;
+    paint_particle_sensorwall(pAry,tp_wall);
+
     imshow(imageName,image);
     waitKey(60);
 }
